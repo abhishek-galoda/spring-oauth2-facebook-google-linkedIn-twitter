@@ -45,13 +45,22 @@ public class SimpleApplication extends WebSecurityConfigurerAdapter {
 		return principal;
 	}
 
+	// @formatter:off
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.antMatcher("/**").addFilterBefore(ssoFilter(), BasicAuthenticationFilter.class).authorizeRequests()
-				.antMatchers("/", "/connect**", "/webjars/**").permitAll().anyRequest().authenticated().and().logout()
-				.logoutSuccessUrl("/").permitAll().and().csrf()
-				.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
+		http.antMatcher("/**")
+		.addFilterBefore(ssoFilter(), BasicAuthenticationFilter.class)
+		.authorizeRequests()
+			.antMatchers("/", "/connect**", "/webjars/**")
+			.permitAll()
+		.anyRequest()
+			.authenticated()
+		.and()
+			.logout()
+		    .logoutSuccessUrl("/").permitAll().and().csrf()
+		 .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
 	}
+	// @formatter:on
 
 	private Filter ssoFilter() {
 
@@ -97,7 +106,7 @@ public class SimpleApplication extends WebSecurityConfigurerAdapter {
 		filters.add(twitterFilter);
 
 		filter.setFilters(filters);
-		
+
 		return filter;
 	}
 
