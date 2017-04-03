@@ -66,20 +66,39 @@ public class SimpleApplication extends WebSecurityConfigurerAdapter {
 				facebook().getClientId());
 		tokenServices.setRestTemplate(facebookTemplate);
 		facebookFilter.setTokenServices(tokenServices);
-		filters.add(facebookFilter);
-		
+
 		OAuth2ClientAuthenticationProcessingFilter googleFilter = new OAuth2ClientAuthenticationProcessingFilter(
 				"/connect/google");
 		OAuth2RestTemplate googleTemplate = new OAuth2RestTemplate(google(), oauth2ClientContext);
 		googleFilter.setRestTemplate(googleTemplate);
-		tokenServices = new UserInfoTokenServices(googleResource().getUserInfoUri(),
-				google().getClientId());
+		tokenServices = new UserInfoTokenServices(googleResource().getUserInfoUri(), google().getClientId());
 		tokenServices.setRestTemplate(googleTemplate);
 		googleFilter.setTokenServices(tokenServices);
+
+		OAuth2ClientAuthenticationProcessingFilter linkedInFilter = new OAuth2ClientAuthenticationProcessingFilter(
+				"/connect/linkedIn");
+		OAuth2RestTemplate linkedInTemplate = new OAuth2RestTemplate(linkedIn(), oauth2ClientContext);
+		linkedInFilter.setRestTemplate(linkedInTemplate);
+		tokenServices = new UserInfoTokenServices(linkedInResource().getUserInfoUri(), linkedIn().getClientId());
+		tokenServices.setRestTemplate(linkedInTemplate);
+		linkedInFilter.setTokenServices(tokenServices);
+
+		OAuth2ClientAuthenticationProcessingFilter twitterFilter = new OAuth2ClientAuthenticationProcessingFilter(
+				"/connect/twitter");
+		OAuth2RestTemplate twitterTemplate = new OAuth2RestTemplate(twitter(), oauth2ClientContext);
+		twitterFilter.setRestTemplate(twitterTemplate);
+		tokenServices = new UserInfoTokenServices(twitterResource().getUserInfoUri(), twitter().getClientId());
+		tokenServices.setRestTemplate(twitterTemplate);
+		twitterFilter.setTokenServices(tokenServices);
+
+		filters.add(facebookFilter);
 		filters.add(googleFilter);
-		
+		filters.add(linkedInFilter);
+		filters.add(twitterFilter);
+
 		filter.setFilters(filters);
-		  return filter;
+		
+		return filter;
 	}
 
 	@Bean
@@ -101,7 +120,7 @@ public class SimpleApplication extends WebSecurityConfigurerAdapter {
 	public ResourceServerProperties facebookResource() {
 		return new ResourceServerProperties();
 	}
-	
+
 	@Bean
 	@ConfigurationProperties("google.client")
 	public AuthorizationCodeResourceDetails google() {
@@ -113,5 +132,28 @@ public class SimpleApplication extends WebSecurityConfigurerAdapter {
 	public ResourceServerProperties googleResource() {
 		return new ResourceServerProperties();
 	}
-	
+
+	@Bean
+	@ConfigurationProperties("linkedIn.client")
+	public AuthorizationCodeResourceDetails linkedIn() {
+		return new AuthorizationCodeResourceDetails();
+	}
+
+	@Bean
+	@ConfigurationProperties("linkedIn.resource")
+	public ResourceServerProperties linkedInResource() {
+		return new ResourceServerProperties();
+	}
+
+	@Bean
+	@ConfigurationProperties("twitter.client")
+	public AuthorizationCodeResourceDetails twitter() {
+		return new AuthorizationCodeResourceDetails();
+	}
+
+	@Bean
+	@ConfigurationProperties("twitter.resource")
+	public ResourceServerProperties twitterResource() {
+		return new ResourceServerProperties();
+	}
 }
